@@ -8,7 +8,7 @@
         org.clojure/tools.reader {:mvn/version "1.4.0"}
         org.clojure/clojurescript {:mvn/version "1.11.132"}}
 
- :paths ["src"]
+ :paths ["src" "classes"]
 
  :aliases
  {:cljs {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"}}}
@@ -16,6 +16,10 @@
   :cljs-repl {:main-opts ["-m" "cljs.main" "-co" "axel_f.dev.js.edn" "--repl"]}
 
   :cljs-build {:main-opts ["-m" "cljs.main" "-co" "axel_f.min.js.edn" "--compile"]}
+
+  :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.6", :git/sha "8e78bcc"}}
+          :ns-default build
+          :exec-fn compile-java}
 
   :test {:extra-paths ["test"]
          :extra-deps {lambdaisland/kaocha {:mvn/version "1.87.1366"}
