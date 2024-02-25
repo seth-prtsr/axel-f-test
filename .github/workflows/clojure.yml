@@ -8,6 +8,46 @@ on:
   #   branches: [$default-branch]
 
 jobs:
+  
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '1.8'
+
+    - uses: actions/setup-node@v2.1.5
+      with:
+        node-version: '13.9.x'
+
+    - uses: DeLaGuardo/setup-clojure@3.1
+      with:
+        tools-deps: latest
+
+    - uses: actions/checkout@v2.3.4
+
+    - name: Prepare npm modules for tests
+      run: |
+        npm install ws isomorphic-ws
+
+    - name: Cache clojure dependencies
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/.m2/repository
+        key: ${{ matrix.clojure }}-clojure-${{ hashFiles('**/deps.edn') }}
+        restore-keys: |
+          ${{ matrix.clojure }}-clojure-
+
+    - name: Compile java classes
+      run: |
+        javac $(find . -name '*.java' -type f)
+
+    - name: Run tests
+      run: |
+        ./bin/kaocha
+
+
   build:
     runs-on: ubuntu-latest
 
