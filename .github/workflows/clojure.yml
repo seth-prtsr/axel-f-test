@@ -1,0 +1,51 @@
+name: Build minified js
+
+on:
+  push
+  # push:
+  # branches: [$default-branch]
+  # pull_request:
+  #   branches: [$default-branch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare java
+        uses: actions/setup-java@v4.0.0
+        with:
+          distribution: "zulu"
+          java-version: "21"
+
+      - name: Prepare clojure
+        uses: DeLaGuardo/setup-clojure@12.5
+        with:
+          cli: 1.11.1
+
+      - name: Cache clojure dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+          key: cljdeps-${{ hashFiles('deps.edn') }}
+          restore-keys: cljdeps-
+
+      - name: Prepare node
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "18.13"
+          cache: "npm"
+
+      - name: Prepare npm modules for tests
+        run: "npm install ws isomorphic-ws"
+
+      - uses: actions/checkout@v4
+
+      - name: Build java classes
+        run: clj -T:build
+
+      - name: Build minified js
+        run: clj -M:cljs-build
