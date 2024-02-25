@@ -20,7 +20,9 @@ jobs:
 
       - name: Prepare clojure
         uses: DeLaGuardo/setup-clojure@12.5
-
+        with:
+          cli: latest
+          
       - name: Cache clojure dependencies
         uses: actions/cache@v3
         with:
