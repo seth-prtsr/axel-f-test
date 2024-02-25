@@ -48,39 +48,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Prepare java
-        uses: actions/setup-java@v4.0.0
-        with:
-          distribution: "zulu"
-          java-version: "21"
-
-      - name: Prepare clojure
-        uses: DeLaGuardo/setup-clojure@12.5
-        with:
-          cli: latest
+    - name: Prepare java
+      uses: actions/setup-java@v4.0.0
+      with:
+        distribution: "zulu"
+        java-version: "21"
           
-      - name: Cache clojure dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.gitlibs
-            ~/.deps.clj
-          key: cljdeps-${{ hashFiles('deps.edn') }}
-          restore-keys: cljdeps-
+    - name: Prepare node
+      uses: actions/setup-node@v2.1.5
+      with:
+        # node-version: "18.13"
+        node-version: '13.9.x'
+          
+    - name: Prepare clojure
+      uses: DeLaGuardo/setup-clojure@12.5
+      with:
+        cli: latest
+          
+    - uses: actions/checkout@v4
+      
+    - name: Prepare npm modules for tests
+      run: "npm install ws isomorphic-ws"
+        
+    - name: Cache clojure dependencies
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/.m2/repository
+        key: ${{ matrix.clojure }}-clojure-${{ hashFiles('**/deps.edn') }}
+        restore-keys: |
+          ${{ matrix.clojure }}-clojure-
 
-      - name: Prepare node
-        uses: actions/setup-node@v2.1.5
-        with:
-          node-version: "18.13"
+    - name: Build java classes
+      run: clojure -T:build
 
-      - name: Prepare npm modules for tests
-        run: "npm install ws isomorphic-ws"
-
-      - uses: actions/checkout@v4
-
-      - name: Build java classes
-        run: clojure -T:build
-
-      - name: Run tests
-        run: ./bin/kaocha
+    - name: Run tests
+      run: ./bin/kaocha
