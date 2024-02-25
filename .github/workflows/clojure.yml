@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build java classes
-        run: clj -T:build
+        run: clojure -T:build
 
       - name: Build minified js
-        run: clj -M:cljs-build
+        run: clojure -M:cljs-build
