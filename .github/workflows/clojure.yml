@@ -47,5 +47,8 @@ jobs:
       - name: Build java classes
         run: clojure -T:build
 
+      - name: Run tests
+        run: ./bin/kaocha
+
       - name: Build minified js
         run: clojure -M:cljs-build
