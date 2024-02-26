@@ -2,7 +2,7 @@
     "name": "axel-f",
     "version": "%version%",
     "description": "axel-f is an engine that can evaluate excel-like expressions.",
-    "homepage": "https://github.com/xapix-io/axel-f",
+    "homepage": "https://github.com/protosure/axel-f",
     "author": "Kirill Chernyshov (https://github.com/DeLaGuardo)",
     "keywords": [
         "excel",
@@ -16,16 +16,17 @@
     "contributors": [
         "Kirill Chernyshov (https://github.com/DeLaGuardo)",
         "Anatoly Smolyaninov (https://github.com/zarkone)",
-        "xapix.io (https://github.com/xapix-io)"
+        "xapix.io (https://github.com/xapix-io)",
+        "Protosure (https://github.com/protosure)",
     ],
     "bugs": {
-        "url": "https://github.com/xapix-io/axel-f/issues"
+        "url": "https://github.com/protosure/axel-f/issues"
     },
     "license": "EPL-1.0",
     "main": "./axel_f.js",
     "repository": {
         "type": "git",
-        "url": "git://github.com/xapix-io/axel-f.git"
+        "url": "git://github.com/seth-prtsr/axel-f-test.git"
     },
     "engines": {
         "node": ">=0.8.28"
