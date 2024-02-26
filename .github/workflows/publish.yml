@@ -8,6 +8,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       # useful for Continuous Deployment developing
     - name: Validate tag action
@@ -42,7 +45,10 @@ jobs:
     - name: Prepare node
       uses: actions/setup-node@v4.0.2
       with:
-        node-version: "18.13"
+        node-version: "${NODE_VERSION}"
+        registry-url: 'https://npm.pkg.github.com'
+        # Defaults to the user or organization that owns the workflow file
+        # scope: '@octocat'
 
     - name: Prepare clojure
       uses: DeLaGuardo/setup-clojure@12.5
@@ -64,7 +70,10 @@ jobs:
         cp release-js/* npm-package/
         sed -i 's;%version%;${{ env.GIT_TAG }};' npm-package/package.json
 
-#    - name: NPM deploy
+    - name: Publish to GitHub Packages
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 #      env:
 #        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 #      run: |
