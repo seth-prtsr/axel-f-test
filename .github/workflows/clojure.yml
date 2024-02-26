@@ -37,6 +37,7 @@ jobs:
           ~/.m2/repository
           ~/.gitlibs
           ~/.deps.clj
+          ~/.cljs
           ~/.npm
         key: deps-${{ hashFiles('deps.edn') }}
         restore-keys: deps-
