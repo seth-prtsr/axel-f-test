@@ -16,10 +16,9 @@ jobs:
         java-version: "21"
           
     - name: Prepare node
-      uses: actions/setup-node@v2.1.5
+      uses: actions/setup-node@v4.0.2
       with:
         node-version: "18.13"
-        # node-version: '13.9.x'
           
     - name: Prepare clojure
       uses: DeLaGuardo/setup-clojure@12.5
@@ -31,18 +30,22 @@ jobs:
     - name: Prepare npm modules for tests
       run: "npm install ws isomorphic-ws"
         
-    - name: Cache clojure dependencies
-      uses: actions/cache@v3
+    - name: Cache dependencies
+      uses: actions/cache@v4.0.0
       with:
         path: |
           ~/.m2/repository
           ~/.gitlibs
           ~/.deps.clj
-        key: cljdeps-${{ hashFiles('deps.edn') }}
-        restore-keys: cljdeps-
+          ~/.npm
+        key: deps-${{ hashFiles('deps.edn') }}
+        restore-keys: deps-
 
     - name: Build java classes
       run: clojure -T:build
 
     - name: Run tests
       run: ./bin/kaocha
+
+    - name: Build minified js
+      run: clojure -M:cljs-build
