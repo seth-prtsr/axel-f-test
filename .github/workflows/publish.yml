@@ -50,6 +50,9 @@ jobs:
         # Defaults to the user or organization that owns the workflow file
         # scope: '@octocat'
 
+    - name: Prepare npm for publish
+      run: npm install -g npm-snapshot 
+      
     - name: Prepare clojure
       uses: DeLaGuardo/setup-clojure@12.5
       with:
@@ -69,11 +72,16 @@ jobs:
         cp LICENSE npm-package/LICENSE
         cp release-js/* npm-package/
         sed -i 's;%version%;${{ env.GIT_TAG }};' npm-package/package.json
-
-    - name: Publish to GitHub Packages
-      run: npm publish
+        cd npm-package
+        BUILD_TAG=$(if [[ $GIT_TAG == *SNAPSHOT ]]; then npm-snapshot "$(date +%s)"; else echo "latest"; fi)
+        npm publish --tag $BUILD_TAG
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  
+#    - name: Publish to GitHub Packages
+#      run: npm publish
+#      env:
+#        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 #      env:
 #        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 #      run: |
