@@ -66,6 +66,7 @@ jobs:
 
     - name: Prepare package
       run: |
+        echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
         cat ~/.npmrc
         mkdir -p npm-package
         cp js/min/axel_f.min.js npm-package/axel_f.js
@@ -87,7 +88,7 @@ jobs:
 #        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 #      run: |
 #        npm install -g npm-snapshot
-#        echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+#        echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/.npmrc
 #        cd npm-package
 #        BUILD_TAG=$(if [[ $GIT_TAG == *SNAPSHOT ]]; then npm-snapshot "$(date +%s)"; else echo "latest"; fi)
 #        npm publish --tag $BUILD_TAG
