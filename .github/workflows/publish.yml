@@ -66,7 +66,7 @@ jobs:
 
     - name: Prepare package
       run: |
-        echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
+        echo "@seth-prtsr:registry=https://npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
         cat ~/.npmrc
         mkdir -p npm-package
         cp js/min/axel_f.min.js npm-package/axel_f.js
@@ -76,19 +76,13 @@ jobs:
         sed -i 's;%version%;${{ env.GIT_TAG }};' npm-package/package.json
         cd npm-package
         BUILD_TAG=$(if [[ $GIT_TAG == *SNAPSHOT ]]; then npm-snapshot "$(date +%s)"; else echo "latest"; fi)
-        npm publish --tag $BUILD_TAG
+        # npm publish --tag $BUILD_TAG
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  
-#    - name: Publish to GitHub Packages
-#      run: npm publish
-#      env:
-#        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-#      env:
-#        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-#      run: |
-#        npm install -g npm-snapshot
-#        echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/.npmrc
-#        cd npm-package
-#        BUILD_TAG=$(if [[ $GIT_TAG == *SNAPSHOT ]]; then npm-snapshot "$(date +%s)"; else echo "latest"; fi)
-#        npm publish --tag $BUILD_TAG
+
+    - name: Publish 
+      uses: JS-DevTools/npm-publish@v3.0.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        registry: "https://npm.pkg.github.com"
+        package: npm-package
