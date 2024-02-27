@@ -34,8 +34,5 @@
     "dependencies": {},
     "files": [
         "axel_f.js"
-    ],
-    "publishConfig": {
-        "@seth-prtsr:registry": "https://npm.pkg.github.com"
-    }
+    ]
 }
