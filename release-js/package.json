@@ -1,5 +1,5 @@
 {
-    "name": "axel-f",
+    "name": "@seth-prtsr/axel-f",
     "version": "%version%",
     "description": "axel-f is an engine that can evaluate excel-like expressions.",
     "homepage": "https://github.com/protosure/axel-f",
