@@ -66,6 +66,7 @@ jobs:
 
     - name: Prepare package
       run: |
+        cat ~/.npmrc
         mkdir -p npm-package
         cp js/min/axel_f.min.js npm-package/axel_f.js
         cp js/min/axel_f.js.map npm-package/axel_f.js.map
