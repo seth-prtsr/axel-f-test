@@ -1,4 +1,4 @@
-name: Publish
+name: Publish to GitHub Packages
 
 on:
   push:
@@ -16,10 +16,10 @@ jobs:
     - name: Validate tag action
       if: startsWith(github.ref,'refs/tags/') != true
       run: exit 1
-      
+
     - name: Checkout
       uses: actions/checkout@v4
- 
+
     - name: Cache dependencies
       uses: actions/cache@v4.0.0
       with:
@@ -29,12 +29,11 @@ jobs:
           ~/.deps.clj
           ~/.cljs
           ~/.npm
-        key: npm-${{ hashFiles('deps.edn') }}
-        restore-keys: npm-
+        key: publish-${{ hashFiles('deps.edn') }}
+        restore-keys: publish-
 
-    - name: Set TAG value
-      run: |
-        echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: Set tag value
+      run: echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
     - name: Prepare java
       uses: actions/setup-java@v4.0.0
@@ -46,13 +45,10 @@ jobs:
       uses: actions/setup-node@v4.0.2
       with:
         node-version: "18.13"
-        registry-url: 'https://npm.pkg.github.com'
-        # Defaults to the user or organization that owns the workflow file
-        # scope: '@octocat'
 
-    - name: Prepare npm for publish
-      run: npm install -g npm-snapshot 
-      
+    - name: Prepare node for publish
+      run: npm install -g npm-snapshot
+
     - name: Prepare clojure
       uses: DeLaGuardo/setup-clojure@12.5
       with:
@@ -67,20 +63,16 @@ jobs:
     - name: Prepare package
       run: |
         echo "@seth-prtsr:registry=https://npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
-        cat ~/.npmrc
         mkdir -p npm-package
         cp js/min/axel_f.min.js npm-package/axel_f.js
         cp js/min/axel_f.js.map npm-package/axel_f.js.map
         cp LICENSE npm-package/LICENSE
         cp release-js/* npm-package/
         sed -i 's;%version%;${{ env.GIT_TAG }};' npm-package/package.json
-        cd npm-package
-        BUILD_TAG=$(if [[ $GIT_TAG == *SNAPSHOT ]]; then npm-snapshot "$(date +%s)"; else echo "latest"; fi)
-        # npm publish --tag $BUILD_TAG
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-    - name: Publish 
+    - name: Publish
       uses: JS-DevTools/npm-publish@v3.0.1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
